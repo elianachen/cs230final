@@ -173,7 +173,7 @@ with analytics_tab:
     plt.ylabel("Average Rating")
     st.pyplot(fig1)
 
-    st.subheader("Rating Distribution (Pie Chart)")
+    st.subheader("Rating Distribution")
     rating_counts = df["rating"].value_counts().sort_index()
     fig2, ax2 = plt.subplots()
     ax2.pie(rating_counts, labels=rating_counts.index, autopct='%1.1f%%')
