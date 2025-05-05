@@ -2,7 +2,7 @@
 Name:       Eliana Chen
 CS230:      Section 4
 Data:       McDonald_s_Reviews.csv
-URL:
+URL:        https://cs230final-ybvsctewnsgsrhxpx8htqn.streamlit.app/
 
 Description:
 This program allows users to explore customer reviews of McDonald's locations across the U.S. Users can filter reviews by state and rating, see store locations on a map, view analytics, and even submit their own reviews through a sidebar form. Additional features include custom filtering, visual trends by state, and highlighted top-rated states.
@@ -171,13 +171,11 @@ with analytics_tab:
     plt.title("Average Rating by State")
     plt.xlabel("State")
     plt.ylabel("Average Rating")
-    plt.xticks(rotation=45)
     st.pyplot(fig1)
 
-    st.subheader("Rating Distribution")
-    fig2 = plt.figure(figsize=(8, 4))
-    sns.histplot(df["rating"], bins=10, kde=True)
-    plt.title("Distribution of Ratings")
-    plt.xlabel("Rating")
-    plt.ylabel("Frequency")
+    st.subheader("Rating Distribution (Pie Chart)")
+    rating_counts = df["rating"].value_counts().sort_index()
+    fig2, ax2 = plt.subplots()
+    ax2.pie(rating_counts, labels=rating_counts.index, autopct='%1.1f%%')
+    ax2.set_title("Rating Distribution")
     st.pyplot(fig2)
