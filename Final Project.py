@@ -11,6 +11,8 @@ This program allows users to explore customer reviews of McDonald's locations ac
 import streamlit as st
 import pandas as pd
 import pydeck as pdk
+import matplotlib.pyplot as plt
+import seaborn as sns
 import os
 
 st.set_page_config(page_title="McReviews USA", layout="wide")
@@ -137,7 +139,7 @@ with explore_tab:
                     data=df_filtered,
                     get_position='[longitude, latitude]',
                     get_color='[200, 16, 46, 160]',
-                    get_radius=3000
+                    get_radius=8000
                 )
             ]
         ))
@@ -154,20 +156,28 @@ with explore_tab:
         st.warning("No reviews to show.")
 
 with analytics_tab:
-    st.title("Ratings Analytics")
+    st.header("Ratings Analytics")
     avg_rating, total_reviews = get_summary_stats(df)
     col1, col2 = st.columns(2)
     col1.metric("Average Rating", round(avg_rating, 2))
     col2.metric("Total Reviews", total_reviews)
 
-    st.subheader("Average Rating by State")
     state_avg = df.groupby("state")["rating"].mean().sort_values(ascending=False)
-    st.bar_chart(state_avg)
-
-    st.subheader("Top 3 States by Rating")
-    for state, score in state_avg.head(3).items():
-        st.write(f"{state}: {round(score, 2)} ")
-
-    st.subheader("Rating Counts")
     rating_counts = df["rating"].value_counts().sort_index()
-    st.bar_chart(rating_counts)
+
+    st.subheader("Average Rating by State")
+    fig1 = plt.figure(figsize=(10, 5))
+    sns.barplot(x=state_avg.index, y=state_avg.values)
+    plt.title("Average Rating by State")
+    plt.xlabel("State")
+    plt.ylabel("Average Rating")
+    plt.xticks(rotation=45)
+    st.pyplot(fig1)
+
+    st.subheader("Rating Distribution")
+    fig2 = plt.figure(figsize=(8, 4))
+    sns.histplot(df["rating"], bins=10, kde=True)
+    plt.title("Distribution of Ratings")
+    plt.xlabel("Rating")
+    plt.ylabel("Frequency")
+    st.pyplot(fig2)
